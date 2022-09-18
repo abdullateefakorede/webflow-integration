@@ -1,0 +1,28 @@
+{
+  "name": "webflow-integration",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abdullateefakorede/webflow-integration.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abdullateefakorede/webflow-integration/issues"
+  },
+  "homepage": "https://github.com/abdullateefakorede/webflow-integration#readme",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "cloudinary": "^1.32.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.2",
+    "express": "^4.18.1",
+    "multer": "^1.4.5-lts.1"
+  }
+}
