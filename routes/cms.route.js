@@ -65,6 +65,7 @@ router.post('/upload', upload.single('image'), async (req, res) => {
 
     return res.status(200).json({status: 200, message: 'CMS uploaded successfully' })
   } catch (error) {
+    console.log('Error => ', error)
     return res.status(400).json({ status: 400, message: 'Error uploading CMS' })
   }
 })
