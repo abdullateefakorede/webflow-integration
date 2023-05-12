@@ -11,91 +11,192 @@ cloudinary.config({
 
 class GhlService {
   static async fetchContact (email) {
-    const apiResponse = await axios.get(
+    const contactSearchApiResponse = await axios.get(
       `https://rest.gohighlevel.com/v1/contacts/?query=${email}`,
       {
         headers: { Authorization: `Bearer ${process.env.GHL_TOKEN}` },
         'Content-Type': 'application/json'
       }
     )
-    const response = apiResponse.data
-    if (!response.contacts[0]) {
+    const contactSearchresponse = contactSearchApiResponse.data
+    const searchedContact = contactSearchresponse.contacts.find(
+      contact => contact.email.toLowerCase() === email.toLowerCase()
+    )
+
+    if (!searchedContact) {
       return {
         status: 200,
         message: 'No contact found for this email address',
         data: null
       }
     }
-    const userStageInfo = response.contacts[0].customField.filter(
+
+    const apiResponse = await axios.get(
+      `https://rest.gohighlevel.com/v1/contacts/${searchedContact.id}`,
+      {
+        headers: { Authorization: `Bearer ${process.env.GHL_TOKEN}` },
+        'Content-Type': 'application/json'
+      }
+    )
+    const response = apiResponse.data
+    const contact = response.contact
+
+    const userStageInfo = contact.customField.filter(
       stage => stage.id === 'BNBxDdWXerkUsqp9P48K'
     )[0]
 
-    const totalPayoutInfo = response.contacts[0].customField.filter(
+    const totalPayoutInfo = contact.customField.filter(
       stage => stage.id === 'cPp3Z5IsIivNBbeLRZmv'
     )[0]
-    const totalReferrralsInfo = response.contacts[0].customField.filter(
+    const totalReferrralsInfo = contact.customField.filter(
       stage => stage.id === 'QkU5qhApRcwe9XKxX9hO'
     )[0]
-    const closedDealsInfo = response.contacts[0].customField.filter(
+    const closedDealsInfo = contact.customField.filter(
       stage => stage.id === 'szCXkCGu4GIVZlpnF0PY'
     )[0]
-    const referralLinkInfo = response.contacts[0].customField.filter(
+    const referralLinkInfo = contact.customField.filter(
       stage => stage.id === 'VS4bqQLuRsKtA6ssi9qa'
     )[0]
-    const loanDocumentInfo = response.contacts[0].customField.filter(
+
+    const loanDocumentInfos = contact.customField.filter(
       stage => stage.id === 'OIvv2BHTvbK3WV8RmMxN'
     )[0]
-    const bankElectionInfo = response.contacts[0].customField.filter(
+
+    let loanDocument = undefined
+
+    if (loanDocumentInfos) {
+      const loanDocumentValues = Object.keys(loanDocumentInfos.value)
+      const recentLoanDocumentInfo =
+        loanDocumentInfos.value[
+          loanDocumentValues[loanDocumentValues.length - 1]
+        ]
+      loanDocument = recentLoanDocumentInfo.url
+    }
+
+    const bankElectionInfos = contact.customField.filter(
       stage => stage.id === 'pCOidBkiIwaS67cmzNZt'
     )[0]
-    const purchaseAgreementInfo = response.contacts[0].customField.filter(
+
+    let bankElection = undefined
+
+    if (bankElectionInfos) {
+      const bankElectionValues = Object.keys(bankElectionInfos.value)
+      const recentBankElectionInfo =
+        bankElectionInfos.value[
+          bankElectionValues[bankElectionValues.length - 1]
+        ]
+      bankElection = recentBankElectionInfo.url
+    }
+
+    const purchaseAgreementInfos = contact.customField.filter(
       stage => stage.id === 'ASTyV4yCK0bSzsdVwQqd'
     )[0]
-    const nmaSubmissionInfo = response.contacts[0].customField.filter(
+
+    let purchaseAgreement = undefined
+    if (purchaseAgreementInfos) {
+      const purchaseAgreementValues = Object.keys(purchaseAgreementInfos.value)
+      const recentPurchaseAgreementInfo =
+        purchaseAgreementInfos.value[
+          purchaseAgreementValues[purchaseAgreementValues.length - 1]
+        ]
+      purchaseAgreement = recentPurchaseAgreementInfo.url
+    }
+
+    const nmaSubmissionInfos = contact.customField.filter(
       stage => stage.id === 'c3nnpbTu1cRgzFfLO6AA'
     )[0]
-    const otherDocumentInfo = response.contacts[0].customField.filter(
+
+    let nmaSubmission = undefined
+
+    if (nmaSubmissionInfos) {
+      const nmaSubmissionValues = Object.keys(nmaSubmissionInfos.value)
+      const recentNmaSubmissionInfo =
+        nmaSubmissionInfos.value[
+          nmaSubmissionValues[nmaSubmissionValues.length - 1]
+        ]
+      nmaSubmission = recentNmaSubmissionInfo.url
+    }
+    const otherDocumentInfos = contact.customField.filter(
       stage => stage.id === 'UGTlZFAfvVrzqgo0R6Gw'
     )[0]
-    const contactMethodInfo = response.contacts[0].customField.filter(
+
+    let otherDocument = undefined
+
+    if (otherDocumentInfos) {
+      const otherDocumentValues = Object.keys(otherDocumentInfos.value)
+      const recentOtherDocumentInfo =
+        otherDocumentInfos.value[
+          otherDocumentValues[otherDocumentValues.length - 1]
+        ]
+      otherDocument = recentOtherDocumentInfo.url
+    }
+
+    const contactMethodInfo = contact.customField.filter(
       stage => stage.id === 'yucMkCliPobN0vfp3Yt1'
     )[0]
-    const userProfilPictureInfo = response.contacts[0].customField.filter(
+
+    const userProfilPictureInfos = contact.customField.filter(
       stage => stage.id === 'um7ID9BjG1vfJNLpFY76'
     )[0]
-    const paymentMethodInfo = response.contacts[0].customField.filter(
+
+    let userProfilPicture = undefined
+    if (userProfilPictureInfos) {
+      const profilePictureValues = Object.keys(userProfilPictureInfos.value)
+      const recentProfilePictureInfo =
+        userProfilPictureInfos.value[
+          profilePictureValues[profilePictureValues.length - 1]
+        ]
+      userProfilPicture = recentProfilePictureInfo.url
+    }
+
+    const paymentMethodInfo = contact.customField.filter(
       stage => stage.id === 'Rd1wOvT7ROfxewCtw8yj'
     )[0]
-    const paymentUsernameInfo = response.contacts[0].customField.filter(
+    const paymentUsernameInfo = contact.customField.filter(
       stage => stage.id === '5DR4TsjyTN42M2jkKKYA'
+    )[0]
+    const signedContractNotesInfo = contact.customField.filter(
+      stage => stage.id === '0Ib4lKuZc4i0Eaxm5ogC'
+    )[0]
+    const perfectPacketNotesInfo = contact.customField.filter(
+      stage => stage.id === 'NS54voeaCkWAMrOwUnYW'
+    )[0]
+    const permittedNotesInfo = contact.customField.filter(
+      stage => stage.id === 'irsgI8j3vvuv9ze2ZYbX'
+    )[0]
+    const installationNotesInfo = contact.customField.filter(
+      stage => stage.id === 'AEylrM9DRPXgvqxq41tY'
     )[0]
 
     return {
       status: 200,
       message: 'Contact fetched successfully',
       data: {
-        initials:
-          response.contacts[0].firstName[0] + response.contacts[0].lastName[0],
-        firstName: response.contacts[0].firstName,
-        lastName: response.contacts[0].lastName,
-        email: response.contacts[0].email,
-        fullName: response.contacts[0].contactName,
-        phoneNumber: response.contacts[0].phone,
-        dateOfBirth: response.contacts[0].dateOfBirth,
+        initials: contact.firstName[0] + contact.lastName[0],
+        firstName: contact.firstName,
+        lastName: contact.lastName,
+        email: contact.email,
+        fullName: contact.contactName,
+        phoneNumber: contact.phone,
+        dateOfBirth: contact.dateOfBirth,
         pipelineStage: userStageInfo?.value,
         totalPayout: totalPayoutInfo?.value || 0,
         totalReferrals: totalReferrralsInfo?.value || 0,
         closedDeals: closedDealsInfo?.value || 0,
         referralLink: referralLinkInfo?.value,
-        loanDocument: loanDocumentInfo?.value,
-        bankElection: bankElectionInfo?.value,
-        purchaseAgreement: purchaseAgreementInfo?.value,
-        nmaSubmission: nmaSubmissionInfo?.value,
-        otherDocument: otherDocumentInfo?.value,
+        loanDocument,
+        bankElection,
+        purchaseAgreement,
+        nmaSubmission,
+        otherDocument,
         contactMethod: contactMethodInfo?.value,
-        userProfilPicture: userProfilPictureInfo?.value,
+        userProfilPicture,
         paymentMethod: paymentMethodInfo?.value,
-        paymentUsername: paymentUsernameInfo?.value
+        paymentUsername: paymentUsernameInfo?.value,
+        signedContractNotes: signedContractNotesInfo?.value,
+        perfectPacketNotes: perfectPacketNotesInfo?.value,
+        permittedNotes: permittedNotesInfo?.value,
+        installationNotes: installationNotesInfo?.value
       }
     }
   }
