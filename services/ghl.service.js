@@ -1,13 +1,5 @@
 require('dotenv').config()
 const axios = require('axios')
-const cloudinary = require('cloudinary')
-const fs = require('fs')
-
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_SECRET
-})
 
 class GhlService {
   static async fetchContact (email) {
@@ -201,21 +193,42 @@ class GhlService {
     }
   }
 
-  static async updateContactInfo (requestBody, file) {
-    const cloudinaryResponse = await cloudinary.v2.uploader.upload(file.path, {
-      public_id: 'lessar-energy/' + Date.now()
-    })
-    const imageUrl = cloudinaryResponse.url
-
+  static async updateContactInformation (requestBody) {
     const ghlPayload = {
       email: requestBody.email,
-      phone: requestBody.phone,
-      name: requestBody.name,
+      phone: requestBody.phoneNumber,
+      name: requestBody.fullName,
       dateOfBirth: requestBody.dateOfBirth,
       customField: {
-        um7ID9BjG1vfJNLpFY76: imageUrl,
-        Rd1wOvT7ROfxewCtw8yj: requestBody.paymentMethod,
         yucMkCliPobN0vfp3Yt1: requestBody.contactMethod,
+      }
+    }
+
+    const ghlUpdateConfig = {
+      method: 'post',
+      url: 'https://rest.gohighlevel.com/v1/contacts/',
+      headers: {
+        Authorization: `Bearer ${process.env.GHL_TOKEN}`,
+        'Content-Type': 'application/json'
+      },
+      data: JSON.stringify(ghlPayload)
+    }
+
+    const ghlResponse = await axios(ghlUpdateConfig)
+    const ghlResponseData = ghlResponse.data
+
+    return {
+      status: 200,
+      message: 'Contact information updated successfully',
+      data: ghlResponseData
+    }
+  }
+
+  static async updateContactPaymentInformation (requestBody) {
+    const ghlPayload = {
+      email: requestBody.email,
+      customField: {
+        Rd1wOvT7ROfxewCtw8yj: requestBody.paymentMethod,
         '5DR4TsjyTN42M2jkKKYA': requestBody.paymentUsername
       }
     }
@@ -233,12 +246,9 @@ class GhlService {
     const ghlResponse = await axios(ghlUpdateConfig)
     const ghlResponseData = ghlResponse.data
 
-    fs.unlinkSync(file.path)
-    await cloudinary.v2.uploader.destroy(cloudinaryResponse.public_id)
-
     return {
       status: 200,
-      message: 'Contact updated successfully',
+      message: 'Contact information updated successfully',
       data: ghlResponseData
     }
   }
