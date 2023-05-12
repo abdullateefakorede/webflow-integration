@@ -176,7 +176,7 @@ class GhlService {
         firstName: contact.firstName,
         lastName: contact.lastName,
         email: contact.email,
-        fullName: contact.contactName,
+        fullName: `${contact.firstName || ''} ${contact.lastName || ''}`.trim(),
         phoneNumber: contact.phone,
         dateOfBirth: contact.dateOfBirth,
         pipelineStage: userStageInfo?.value,
