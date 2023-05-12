@@ -12,7 +12,7 @@ const port = process.env.PORT || 4001
 const mutatedDomains = process.env.DOMAINS?.split(',').map(domain => 'https://' + domain)
 const corsOptions = {
   origin: mutatedDomains,
-  methods: 'POST'
+  methods: ['POST', 'PUT', 'GET']
 }
 
 app.use(express.json())
