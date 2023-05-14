@@ -267,7 +267,9 @@ class GhlService {
   }
 
   static async uploadInstalledPanelImages (requestBody, files) {
-    const imageUrls = []
+    const contact = await GhlService.fetchContact(requestBody.email)
+    const contactExistingPanelImages = contact.data.installedPanelImages
+    const imageUrls = [...contactExistingPanelImages]
 
     await Promise.all(
       files.map(async file => {
@@ -278,6 +280,8 @@ class GhlService {
         imageUrls.push(response.url)
       })
     )
+
+    imageUrls.splice(3)
 
     const ghlPayload = {
       email: requestBody.email,
