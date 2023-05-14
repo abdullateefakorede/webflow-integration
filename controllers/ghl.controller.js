@@ -28,13 +28,11 @@ exports.updateContactInformation = async (req, res) => {
     return res.status(200).json(response)
   } catch (error) {
     console.log('Error => ', error)
-    return res
-      .status(400)
-      .json({
-        status: 400,
-        message: 'Error updating contact information',
-        data: null
-      })
+    return res.status(400).json({
+      status: 400,
+      message: 'Error updating contact information',
+      data: null
+    })
   }
 }
 
@@ -45,12 +43,28 @@ exports.updateContactPaymentInformation = async (req, res) => {
     return res.status(200).json(response)
   } catch (error) {
     console.log('Error => ', error)
-    return res
-      .status(400)
-      .json({
-        status: 400,
-        message: 'Error updating contact information',
-        data: null
-      })
+    return res.status(400).json({
+      status: 400,
+      message: 'Error updating contact information',
+      data: null
+    })
+  }
+}
+
+exports.uploadInstalledPanelImages = async (req, res) => {
+  try {
+    const response = await GhlService.uploadInstalledPanelImages(
+      req.body,
+      req.files
+    )
+
+    return res.status(200).json(response)
+  } catch (error) {
+    console.log('Error => ', error)
+    return res.status(400).json({
+      status: 400,
+      message: 'Error uploading panel images',
+      data: null
+    })
   }
 }

@@ -1,5 +1,13 @@
 require('dotenv').config()
 const axios = require('axios')
+const cloudinary = require('cloudinary')
+const fs = require('fs')
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET
+})
 
 class GhlService {
   static async fetchContact (email) {
@@ -160,6 +168,10 @@ class GhlService {
       stage => stage.id === 'AEylrM9DRPXgvqxq41tY'
     )[0]
 
+    const installedPanelImagesInfos = contact.customField.filter(
+      stage => stage.id === 'Iu2a2gKfoL200ZYDGmMn'
+    )[0]
+
     return {
       status: 200,
       message: 'Contact fetched successfully',
@@ -188,7 +200,8 @@ class GhlService {
         signedContractNotes: signedContractNotesInfo?.value,
         perfectPacketNotes: perfectPacketNotesInfo?.value,
         permittedNotes: permittedNotesInfo?.value,
-        installationNotes: installationNotesInfo?.value
+        installationNotes: installationNotesInfo?.value,
+        installedPanelImages: installedPanelImagesInfos.value
       }
     }
   }
@@ -200,7 +213,7 @@ class GhlService {
       name: requestBody.fullName,
       dateOfBirth: requestBody.dateOfBirth,
       customField: {
-        yucMkCliPobN0vfp3Yt1: requestBody.contactMethod,
+        yucMkCliPobN0vfp3Yt1: requestBody.contactMethod
       }
     }
 
@@ -249,6 +262,52 @@ class GhlService {
     return {
       status: 200,
       message: 'Contact information updated successfully',
+      data: ghlResponseData
+    }
+  }
+
+  static async uploadInstalledPanelImages (requestBody, files) {
+    const imageUrls = []
+
+    await Promise.all(
+      files.map(async file => {
+        const response = await cloudinary.v2.uploader.upload(file.path, {
+          public_id: 'lessar-energy/installed-panels/' + Date.now()
+        })
+
+        imageUrls.push(response.url)
+      })
+    )
+
+    const ghlPayload = {
+      email: requestBody.email,
+      customField: {
+        Iu2a2gKfoL200ZYDGmMn: imageUrls
+      }
+    }
+
+    const ghlUpdateConfig = {
+      method: 'post',
+      url: 'https://rest.gohighlevel.com/v1/contacts/',
+      headers: {
+        Authorization: `Bearer ${process.env.GHL_TOKEN}`,
+        'Content-Type': 'application/json'
+      },
+      data: JSON.stringify(ghlPayload)
+    }
+
+    const ghlResponse = await axios(ghlUpdateConfig)
+    const ghlResponseData = ghlResponse.data
+
+    await Promise.all(
+      files.map(async file => {
+        fs.unlinkSync(file.path)
+      })
+    )
+
+    return {
+      status: 200,
+      message: 'Panel images updated successfully',
       data: ghlResponseData
     }
   }

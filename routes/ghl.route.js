@@ -2,8 +2,10 @@ const express = require('express')
 const {
   fetchContact,
   updateContactInformation,
-  updateContactPaymentInformation
+  updateContactPaymentInformation,
+  uploadInstalledPanelImages
 } = require('../controllers/ghl.controller')
+const { upload } = require('../constants/file-upload')
 
 const router = express.Router()
 
@@ -14,5 +16,7 @@ router.put(
   '/contact/update-contact-payment-information',
   updateContactPaymentInformation
 )
+
+router.post('/contact/upload-installed-panel-images', upload.array('panelImages', 3), uploadInstalledPanelImages)
 
 module.exports = router
