@@ -201,7 +201,7 @@ class GhlService {
         perfectPacketNotes: perfectPacketNotesInfo?.value,
         permittedNotes: permittedNotesInfo?.value,
         installationNotes: installationNotesInfo?.value,
-        installedPanelImages: installedPanelImagesInfos.value
+        installedPanelImages: installedPanelImagesInfos?.value
       }
     }
   }
