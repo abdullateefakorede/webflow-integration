@@ -268,7 +268,7 @@ class GhlService {
 
   static async uploadInstalledPanelImages (requestBody, files) {
     const contact = await GhlService.fetchContact(requestBody.email)
-    const contactExistingPanelImages = contact.data.installedPanelImages
+    const contactExistingPanelImages = contact.data.installedPanelImages ?? []
     const imageUrls = [...contactExistingPanelImages]
 
     await Promise.all(
