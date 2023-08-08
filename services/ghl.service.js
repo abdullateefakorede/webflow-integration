@@ -320,7 +320,7 @@ class GhlService {
     let resumeFile = undefined
     let coverLetterFile = undefined
 
-    if (files.resume[0]) {
+    if (files.resume?.length > 0) {
       const response = await cloudinary.v2.uploader.upload(
         files.resume[0].path,
         {
@@ -332,9 +332,10 @@ class GhlService {
       )
 
       resumeFile = response.url
+      fs.unlinkSync(files.resume[0].path)
     }
 
-    if (files.coverLetter[0]) {
+    if (files.coverLetter?.length > 0) {
       const response = await cloudinary.v2.uploader.upload(
         files.coverLetter[0].path,
         {
@@ -346,6 +347,7 @@ class GhlService {
       )
 
       coverLetterFile = response.url
+      fs.unlinkSync(files.coverLetter[0].path)
     }
 
     const ghlPayload = {
@@ -381,9 +383,6 @@ class GhlService {
 
     const ghlResponse = await axios(ghlUpdateConfig)
     const ghlResponseData = ghlResponse.data
-
-    fs.unlinkSync(files.resume[0].path)
-    fs.unlinkSync(files.coverLetter[0].path)
 
     return {
       status: 200,
