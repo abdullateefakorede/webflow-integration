@@ -361,6 +361,7 @@ class GhlService {
         '0uYdmarFQp96KgbByioL': resumeFile,
         SxIMPDO7Rr8qArZdEBA3: resumeFile,
         rz5AIK9FsE5PmDdmVWv2: coverLetterFile,
+        rAYZX5X7aqAaBZX5YHD5: coverLetterFile,
         mPCleqYnH6xMwHyntL5x: requestBody.howDidYouFindOutAboutUs,
         nO010IbGoyuQ2l3tathx: requestBody.referredBy,
         KSGzMKT59DK3RAlNCDQq: requestBody.roleInterestedIn,
