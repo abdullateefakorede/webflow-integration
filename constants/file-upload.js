@@ -3,7 +3,7 @@ const path = require('path')
 
 exports.upload = multer({
   storage: multer.diskStorage({
-    destination: 'uploads/',
+    destination: './uploads/',
     filename: (_req, file, cb) => {
       return cb(null, Date.now() + file.originalname.split(' ')[0])
     },
