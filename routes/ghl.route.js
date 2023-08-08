@@ -3,7 +3,8 @@ const {
   fetchContact,
   updateContactInformation,
   updateContactPaymentInformation,
-  uploadInstalledPanelImages
+  uploadInstalledPanelImages,
+  submitConquerJobApplication
 } = require('../controllers/ghl.controller')
 const { upload } = require('../constants/file-upload')
 
@@ -17,6 +18,23 @@ router.put(
   updateContactPaymentInformation
 )
 
-router.post('/contact/upload-installed-panel-images', upload.array('panelImages', 3), uploadInstalledPanelImages)
+router.post(
+  '/contact/upload-installed-panel-images',
+  upload.array('panelImages', 3),
+  uploadInstalledPanelImages
+)
+router.post(
+  '/contact/upload-installed-panel-images',
+  upload.array('panelImages', 3),
+  uploadInstalledPanelImages
+)
+router.post(
+  '/submit/conquer-job-application',
+  upload.fields([
+    { name: 'resume', maxCount: 1 },
+    { name: 'coverLetter', maxCount: 1 }
+  ]),
+  submitConquerJobApplication
+)
 
 module.exports = router

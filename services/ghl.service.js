@@ -315,6 +315,83 @@ class GhlService {
       data: ghlResponseData
     }
   }
+
+  static async submitConquerJobApplication (requestBody, files) {
+    let resumeFile = undefined
+    let coverLetterFile = undefined
+
+    if (files.resume[0]) {
+      const response = await cloudinary.v2.uploader.upload(
+        files.resume[0].path,
+        {
+          public_id:
+            'lessar-energy/conquer-resume/' +
+            requestBody.fullName.split(' ')[0].toLowerCase() +
+            Date.now()
+        }
+      )
+
+      resumeFile = response.url
+    }
+
+    if (files.coverLetter[0]) {
+      const response = await cloudinary.v2.uploader.upload(
+        files.coverLetter[0].path,
+        {
+          public_id:
+            'lessar-energy/conquer-cover-letter/' +
+            requestBody.fullName.split(' ')[0].toLowerCase() +
+            Date.now()
+        }
+      )
+
+      coverLetterFile = response.url
+    }
+
+    const ghlPayload = {
+      email: requestBody.email,
+      phone: requestBody.phoneNumber,
+      name: requestBody.fullName,
+      address1: requestBody.address,
+      tags: ['Conquer Candidate'],
+      customField: {
+        ltOMEfKg0ngn4QsSUsbk: requestBody.locationApplyingFor,
+        EvnQpHQG41pWccVrpjnv: requestBody.areYouACollegeStudent,
+        FXSsgralpBwLBQzNbaiX: requestBody.universityYouAttend,
+        '0uYdmarFQp96KgbByioL': resumeFile,
+        SxIMPDO7Rr8qArZdEBA3: resumeFile,
+        rz5AIK9FsE5PmDdmVWv2: coverLetterFile,
+        mPCleqYnH6xMwHyntL5x: requestBody.howDidYouFindOutAboutUs,
+        nO010IbGoyuQ2l3tathx: requestBody.referredBy,
+        KSGzMKT59DK3RAlNCDQq: requestBody.roleInterestedIn,
+        cPnSJDELuZYpN72Kh7Rq: requestBody.workAuthorization
+      }
+    }
+
+    const ghlUpdateConfig = {
+      method: 'post',
+      url: 'https://rest.gohighlevel.com/v1/contacts/',
+      headers: {
+        Authorization: `Bearer ${process.env.CONQUER_GHL_TOKEN}`,
+        'Content-Type': 'application/json'
+      },
+      data: JSON.stringify(ghlPayload)
+    }
+
+    const ghlResponse = await axios(ghlUpdateConfig)
+    const ghlResponseData = ghlResponse.data
+
+    fs.unlinkSync(files.resume[0].path)
+    fs.unlinkSync(files.coverLetter[0].path)
+
+    return {
+      status: 200,
+      message: 'Job application submitted successfully',
+      data: {
+        email: ghlResponseData.contact.email
+      }
+    }
+  }
 }
 
 module.exports = GhlService
