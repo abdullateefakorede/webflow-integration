@@ -109,3 +109,26 @@ exports.submitConquerJobApplication = async (req, res) => {
     })
   }
 }
+
+exports.submitDealerInformation = async (req, res) => {
+  try {
+    const { email } = req.body
+
+    if (!email) {
+      return res
+        .status(400)
+        .json({ status: 400, message: 'Please provide the dealer email.' })
+    }
+
+    const response = await GhlService.submitDealerInformation(req.body)
+
+    return res.status(200).json(response)
+  } catch (error) {
+    console.log('Error => ', error)
+    return res.status(400).json({
+      status: 400,
+      message: 'Error submitting dealer information',
+      data: null
+    })
+  }
+}

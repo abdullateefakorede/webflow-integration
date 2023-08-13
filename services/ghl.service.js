@@ -392,6 +392,38 @@ class GhlService {
       }
     }
   }
+
+  static async submitDealerInformation (requestBody) {
+    const ghlPayload = {
+      email: requestBody.email,
+      phone: requestBody.phoneNumber,
+      name: requestBody.fullName,
+      customField: {
+        zHBC3T8hhQ8C0SAFob2o: requestBody.businessName,
+        Fx9Wj0kHzVEGmun6C2Wd: requestBody.currentSalesVolume,
+        sLYjpL0kHpirLUubaMjl: requestBody.title
+      }
+    }
+
+    const ghlUpdateConfig = {
+      method: 'post',
+      url: 'https://rest.gohighlevel.com/v1/contacts/',
+      headers: {
+        Authorization: `Bearer ${process.env.DEALER_GHL_TOKEN}`,
+        'Content-Type': 'application/json'
+      },
+      data: JSON.stringify(ghlPayload)
+    }
+
+    const ghlResponse = await axios(ghlUpdateConfig)
+    const ghlResponseData = ghlResponse.data
+
+    return {
+      status: 200,
+      message: 'Dealer information submitted successfully',
+      data: { email: ghlResponseData.contact.email }
+    }
+  }
 }
 
 module.exports = GhlService

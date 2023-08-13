@@ -4,7 +4,8 @@ const {
   updateContactInformation,
   updateContactPaymentInformation,
   uploadInstalledPanelImages,
-  submitConquerJobApplication
+  submitConquerJobApplication,
+  submitDealerInformation
 } = require('../controllers/ghl.controller')
 const { upload } = require('../constants/file-upload')
 
@@ -36,5 +37,6 @@ router.post(
   ]),
   submitConquerJobApplication
 )
+router.post('/submit/dealer-information', submitDealerInformation)
 
 module.exports = router
